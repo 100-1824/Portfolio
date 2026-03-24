@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Umair Ahmad — Portfolio
 
-## Getting Started
+A modern, animated personal portfolio built with **Next.js 14**, **Tailwind CSS**, and **Framer Motion**. Showcasing projects in Cybersecurity, AI/ML, and Full-Stack Web Development.
 
-First, run the development server:
+🔗 **Live:** [Coming Soon]
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## ✨ Features
+
+- **Glassmorphism UI** — Frosted-glass cards with smooth backdrop blur effects
+- **Smooth Animations** — Scroll-triggered transitions powered by Framer Motion
+- **Custom Cursor** — Interactive cursor that reacts to hoverable elements
+- **Floating Symbols** — Animated background particles for visual depth
+- **Scroll Progress** — Top progress bar indicating page scroll position
+- **Responsive Design** — Fully optimized for mobile, tablet, and desktop
+- **SEO Optimized** — Sitemap, robots.txt, and meta tags out of the box
+- **Dark Theme** — Sleek dark color scheme throughout
+
+---
+
+## 🛠 Tech Stack
+
+| Layer       | Technology                          |
+|-------------|-------------------------------------|
+| Framework   | Next.js 14 (App Router)             |
+| Language    | TypeScript                          |
+| Styling     | Tailwind CSS                        |
+| Animations  | Framer Motion                       |
+| Icons       | Heroicons                           |
+| SEO         | next-sitemap                        |
+| Fonts       | Geist Sans & Geist Mono             |
+
+---
+
+## 📁 Project Structure
+
+```
+Portfolio/
+├── public/
+│   ├── images/          # Profile photo & project images
+│   ├── resume.pdf       # Downloadable resume
+│   ├── robots.txt
+│   └── sitemap.xml
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx   # Root layout with metadata
+│   │   ├── page.tsx     # Home page
+│   │   ├── blog/        # Blog page
+│   │   └── globals.css  # Global styles
+│   ├── components/
+│   │   ├── Hero.tsx
+│   │   ├── About.tsx
+│   │   ├── Skills.tsx
+│   │   ├── Projects.tsx
+│   │   ├── Experience.tsx
+│   │   ├── Certifications.tsx
+│   │   ├── Contact.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── Footer.tsx
+│   │   ├── CustomCursor.tsx
+│   │   ├── FloatingSymbols.tsx
+│   │   ├── ScrollProgress.tsx
+│   │   └── ui/          # Reusable UI components
+│   ├── data/
+│   │   └── index.ts     # All portfolio data (projects, skills, experience)
+│   └── lib/
+│       ├── animations.ts
+│       └── utils.ts
+├── tailwind.config.ts
+├── next.config.mjs
+├── tsconfig.json
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
 
-## Learn More
+- **Node.js** 18+
+- **npm** or **yarn**
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Clone the repository
+git clone https://github.com/100-1824/Portfolio.git
+cd Portfolio
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Install dependencies
+npm install
 
-## Deploy on Vercel
+# Start development server
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Open [http://localhost:3000](http://localhost:3000) to view it.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📄 Sections
+
+| Section           | Description                                                    |
+|-------------------|----------------------------------------------------------------|
+| **Hero**          | Animated intro with name, title, and CTA buttons               |
+| **About**         | Brief bio and background                                        |
+| **Skills**        | Categorized skill cards (Programming, Cybersecurity, AI/ML, DevOps, Web Dev, Databases) |
+| **Projects**      | Featured project cards with descriptions and tech tags          |
+| **Experience**    | Work history and education timeline                             |
+| **Certifications**| Professional certifications with issuer details                 |
+| **Contact**       | Contact form and social links                                   |
+
+---
+
+## 👤 Author
+
+**Umair Ahmad**
+- BS Software Engineering — COMSATS University Islamabad
+- Cybersecurity · AI/ML · Full-Stack Development
+- Currently: Web Hosting Engineer @ COMSATS Internet Services
+
+---
+
+## 📝 License
+
+This project is for personal use. All rights reserved.
