@@ -7,7 +7,7 @@ User-agent: GPTBot
 Disallow: /
 
 # Host
-Host: https://umair-ahmad.vercel.app
+Host: https://umair-ahmed-portfolio.vercel.app
 
 # Sitemaps
-Sitemap: https://umair-ahmad.vercel.app/sitemap.xml
+Sitemap: https://umair-ahmed-portfolio.vercel.app/sitemap.xml
