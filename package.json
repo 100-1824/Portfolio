@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next-sitemap",
+    "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "canvas": "^3.2.2",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "next": "14.2.35",
