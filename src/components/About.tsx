@@ -67,16 +67,15 @@ export default function About() {
             <div className="absolute -inset-4 rounded-3xl border border-accent/20 rotate-3" />
             <div className="absolute -inset-2 rounded-3xl border border-secondary/20 -rotate-2" />
 
-            {/* Avatar placeholder */}
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-accent/20 via-bg to-secondary/20 border border-white/10 aspect-square flex items-center justify-center">
-              <div className="text-center p-8">
-                <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-accent to-secondary flex items-center justify-center text-bg text-5xl font-bold font-heading mb-4">
-                  UA
-                </div>
-                <p className="text-gray-400 font-mono text-xs">[ photo placeholder ]</p>
-              </div>
+            {/* Profile photo */}
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-accent/20 via-bg to-secondary/20 border border-white/10 aspect-square">
+              <img
+                src="/images/profile.jpeg"
+                alt="Umair Ahmad"
+                className="w-full h-full object-cover"
+              />
               {/* Code decoration */}
-              <div className="absolute bottom-4 left-4 right-4 font-mono text-xs text-accent/40 leading-relaxed">
+              <div className="absolute bottom-4 left-4 right-4 font-mono text-xs text-accent/40 leading-relaxed bg-bg/60 backdrop-blur-sm rounded-lg p-2">
                 <p>$ whoami</p>
                 <p className="text-secondary/60">→ umair_ahmad</p>
               </div>
