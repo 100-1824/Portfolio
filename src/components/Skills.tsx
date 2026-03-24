@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { staggerContainer, staggerItem, pillFade, staggerFast } from '@/lib/animations';
+import { staggerContainer, staggerItem } from '@/lib/animations';
 import SectionLabel from './ui/SectionLabel';
 import { skillCategories } from '@/data';
 
@@ -73,49 +73,24 @@ function SkillCard({ category }: { category: typeof skillCategories[0] }) {
         <h3 className="font-heading font-bold text-white text-lg">{category.title}</h3>
       </div>
 
-      {/* Pills */}
-      <motion.div
-        variants={staggerFast}
-        initial="hidden"
-        animate={hovered ? 'visible' : 'hidden'}
-        className="flex flex-wrap gap-2"
-      >
-        {/* Always show pills, but animate them when card is first hovered */}
+      {/* Pills — always colored, glow added on desktop hover */}
+      <div className="relative flex flex-wrap gap-2">
         {category.skills.map((skill) => (
-          <SkillPill key={skill} skill={skill} color={category.color} hovered={hovered} />
+          <motion.span
+            key={skill}
+            whileHover={{ scale: 1.08 }}
+            className="px-3 py-1 rounded-full text-xs font-mono border transition-all duration-200"
+            style={{
+              borderColor: `${category.color}60`,
+              color: category.color,
+              backgroundColor: `${category.color}15`,
+              boxShadow: hovered ? `0 0 8px ${category.color}30` : undefined,
+            }}
+          >
+            {skill}
+          </motion.span>
         ))}
-      </motion.div>
-
-      {/* Static pills for no-hover state */}
-      {!hovered && (
-        <div className="flex flex-wrap gap-2">
-          {category.skills.map((skill) => (
-            <span
-              key={skill}
-              className="px-3 py-1 rounded-full text-xs font-mono border border-white/10 text-gray-400"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      )}
+      </div>
     </motion.div>
-  );
-}
-
-function SkillPill({ skill, color, hovered }: { skill: string; color: string; hovered: boolean }) {
-  return (
-    <motion.span
-      variants={pillFade}
-      className="px-3 py-1 rounded-full text-xs font-mono border transition-all duration-200"
-      style={{
-        borderColor: `${color}60`,
-        color: color,
-        backgroundColor: `${color}15`,
-        boxShadow: hovered ? `0 0 8px ${color}30` : undefined,
-      }}
-    >
-      {skill}
-    </motion.span>
   );
 }
