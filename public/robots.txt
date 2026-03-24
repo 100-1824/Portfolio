@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Allow: /
+
+# GPTBot
+User-agent: GPTBot
+Disallow: /
+
+# Host
+Host: https://umair-ahmad.vercel.app
+
+# Sitemaps
+Sitemap: https://umair-ahmad.vercel.app/sitemap.xml

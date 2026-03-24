@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    cursor: none; /* custom cursor takes over on desktop */
+  }
+
+  @media (pointer: coarse) {
+    html { cursor: auto; }
+  }
+
+  body {
+    @apply bg-bg text-white font-body antialiased;
+    background-color: #0F172A;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #38BDF830;
+    color: #38BDF8;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0F172A; }
+  ::-webkit-scrollbar-thumb { background: #38BDF840; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #38BDF880; }
+}
+
+/* ── Utilities ── */
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(135deg, #38BDF8 0%, #10B981 50%, #8B5CF6 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-x 4s ease infinite;
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px #38BDF840, 0 0 40px #38BDF820;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .section-fade {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+
+  /* Performance: only transform+opacity on animated elements */
+  .will-transform {
+    will-change: transform;
+  }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* ── Light mode overrides ── */
+/* Applied when <html> has class="light" (dark class is removed) */
+
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #F1F5F9;
+  color: #0F172A;
+}
+
+/* All white text → near-black */
+html.light .text-white,
+html.light h1, html.light h2, html.light h3, html.light h4, html.light h5 {
+  color: #0F172A !important;
+}
+
+/* gradient-text keeps its gradient (transparent fill stays transparent — fine) */
+
+/* Gray text → readable gray */
+html.light .text-gray-400,
+html.light .text-gray-500,
+html.light .text-gray-600 {
+  color: #475569 !important;
+}
+
+/* Card surfaces */
+html.light .bg-white\/5,
+html.light .backdrop-blur-md,
+html.light .glass {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Borders */
+html.light .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+html.light .border-white\/20 { border-color: rgba(0,0,0,0.12) !important; }
+
+/* Navbar background when scrolled */
+html.light .bg-bg\/80 { background-color: rgba(241,245,249,0.85) !important; }
+
+/* Footer surface */
+html.light .bg-white\/5 { background-color: rgba(255,255,255,0.6) !important; }
+
+/* Scrollbar */
+html.light ::-webkit-scrollbar-track { background: #F1F5F9; }
+html.light ::-webkit-scrollbar-thumb { background: #38BDF860; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
