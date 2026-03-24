@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 import { staggerContainer, staggerItem } from '@/lib/animations';
 import SectionLabel from './ui/SectionLabel';
 
@@ -58,6 +59,12 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState('');
+
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+  }, []);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -69,13 +76,30 @@ export default function Contact() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    // In a real deployment, post to a backend or use a service like Formspree
-    const gmailLink = `https://mail.google.com/mail/?view=cm&to=18umair24@gmail.com&su=${encodeURIComponent(`Portfolio Contact from ${form.name}`)}&body=${encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`)}`;
-    window.open(gmailLink, '_blank');
-    setSubmitted(true);
+
+    setSending(true);
+    setSendError('');
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: form.name,
+          from_email: form.email,
+          message: form.message,
+        }
+      );
+      setSubmitted(true);
+      setForm({ name: '', email: '', message: '' });
+    } catch {
+      setSendError('Failed to send. Try emailing me directly at 18umair24@gmail.com');
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -148,7 +172,7 @@ export default function Contact() {
                   </svg>
                 </div>
                 <h3 className="text-white font-bold text-xl mb-2">Message Sent!</h3>
-                <p className="text-gray-400">Your email client should have opened. I&apos;ll get back to you soon.</p>
+                <p className="text-gray-400">Thanks! I&apos;ll get back to you soon.</p>
               </div>
             </motion.div>
           ) : (
@@ -169,7 +193,8 @@ export default function Contact() {
                     value={form[field.name as keyof typeof form]}
                     onChange={(e) => setForm({ ...form, [field.name]: e.target.value })}
                     placeholder={field.placeholder}
-                    className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all ${
+                    disabled={sending}
+                    className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all disabled:opacity-50 ${
                       errors[field.name] ? 'border-red-500/50' : 'border-white/10 focus:border-accent/40'
                     }`}
                   />
@@ -190,12 +215,17 @@ export default function Contact() {
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   placeholder="Tell me about your project or inquiry..."
                   rows={5}
-                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all resize-none ${
+                  disabled={sending}
+                  className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white placeholder-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all resize-none disabled:opacity-50 ${
                     errors.message ? 'border-red-500/50' : 'border-white/10 focus:border-accent/40'
                   }`}
                 />
                 {errors.message && <p className="text-red-400 text-xs mt-1">{errors.message}</p>}
               </motion.div>
+
+              {sendError && (
+                <p className="text-red-400 text-sm">{sendError}</p>
+              )}
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -204,13 +234,14 @@ export default function Contact() {
               >
                 <motion.button
                   type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  animate={{ boxShadow: ['0 0 0 0 #38BDF840', '0 0 20px 8px #38BDF820', '0 0 0 0 #38BDF840'] }}
+                  disabled={sending}
+                  whileHover={sending ? {} : { scale: 1.02 }}
+                  whileTap={sending ? {} : { scale: 0.97 }}
+                  animate={sending ? {} : { boxShadow: ['0 0 0 0 #38BDF840', '0 0 20px 8px #38BDF820', '0 0 0 0 #38BDF840'] }}
                   transition={{ boxShadow: { duration: 2.5, repeat: Infinity } }}
-                  className="w-full py-4 rounded-xl bg-accent text-bg font-semibold text-sm hover:bg-accent/90 transition-all"
+                  className="w-full py-4 rounded-xl bg-accent text-bg font-semibold text-sm hover:bg-accent/90 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {sending ? 'Sending...' : 'Send Message'}
                 </motion.button>
               </motion.div>
             </form>
