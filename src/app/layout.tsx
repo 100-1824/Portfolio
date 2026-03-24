@@ -19,7 +19,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://umair-ahmad.vercel.app'),
+  metadataBase: new URL('https://umair-ahmed-portfolio.vercel.app'),
   title: {
     default: 'Umair Ahmad | Cybersecurity & Full-Stack Developer',
     template: '%s | Umair Ahmad',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://umair-ahmad.vercel.app',
+    url: 'https://umair-ahmed-portfolio.vercel.app',
     title: 'Umair Ahmad | Cybersecurity & Full-Stack Developer',
     description:
       'Cybersecurity Specialist · AI/ML Engineer · Full-Stack Developer · DevOps Engineer. Based in Islamabad, Pakistan.',
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     images: ['/og-image.png'],
   },
   alternates: {
-    canonical: 'https://umair-ahmad.vercel.app',
+    canonical: 'https://umair-ahmed-portfolio.vercel.app',
   },
   robots: {
     index: true,
@@ -77,6 +77,9 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
     },
   },
+  verification: {
+    google: 'F6gK_GHiO3mBp15co7GtnQ10kr3MdxtxjRwTpha4Lus',
+  },
 };
 
 const jsonLd = {
@@ -84,7 +87,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Umair Ahmad',
   jobTitle: 'Cybersecurity Specialist & Full-Stack Developer',
-  url: 'https://umair-ahmad.vercel.app',
+  url: 'https://umair-ahmed-portfolio.vercel.app',
   email: '18umair24@gmail.com',
   address: {
     '@type': 'PostalAddress',
@@ -109,7 +112,7 @@ const jsonLd = {
     'Docker',
     'Kubernetes',
   ],
-  image: 'https://umair-ahmad.vercel.app/og-image.png',
+  image: 'https://umair-ahmed-portfolio.vercel.app/og-image.png',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
