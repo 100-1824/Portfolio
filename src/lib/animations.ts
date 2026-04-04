@@ -91,6 +91,45 @@ export const slideUpClip: Variants = {
   },
 };
 
+// blur-in entrance — feels premium, like elements materialise from fog
+export const blurIn: Variants = {
+  hidden: { opacity: 0, filter: 'blur(20px)', y: 24 },
+  visible: {
+    opacity: 1,
+    filter: 'blur(0px)',
+    y: 0,
+    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+export const blurInFast: Variants = {
+  hidden: { opacity: 0, filter: 'blur(10px)', y: 12 },
+  visible: {
+    opacity: 1,
+    filter: 'blur(0px)',
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+// Stagger container for blur-in children
+export const blurInStagger: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.05 },
+  },
+};
+
+// Clip-path reveal — text slides up from a mask
+export const clipReveal: Variants = {
+  hidden: { clipPath: 'inset(100% 0 0 0)', y: 16 },
+  visible: {
+    clipPath: 'inset(0% 0 0 0)',
+    y: 0,
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 export const springBounce = {
   type: 'spring' as const,
   stiffness: 260,

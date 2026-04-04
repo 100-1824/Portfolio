@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { drawLine } from '@/lib/animations';
+import { drawLine, blurIn, blurInStagger } from '@/lib/animations';
 import SectionLabel from './ui/SectionLabel';
 import { experience } from '@/data';
 
@@ -14,81 +14,152 @@ export default function Experience() {
     <section id="experience" ref={ref} className="py-24 px-4 max-w-5xl mx-auto">
       <SectionLabel text="experience.log()" />
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
+        variants={blurIn}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
         className="text-4xl sm:text-5xl font-bold font-heading mb-16"
       >
-        Experience & Education
+        Experience &amp; Education
       </motion.h2>
 
       <div className="relative">
-        {/* Vertical line */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/10 md:-translate-x-px overflow-hidden">
+        {/* Animated vertical line */}
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/5 md:-translate-x-px overflow-hidden">
           <motion.div
             variants={drawLine}
             initial="hidden"
             animate={isInView ? 'visible' : 'hidden'}
-            className="w-full h-full bg-gradient-to-b from-accent via-secondary to-purple-500"
+            className="w-full h-full"
+            style={{ background: 'linear-gradient(180deg, #a855f7 0%, #ec4899 35%, #38bdf8 70%, #10b981 100%)' }}
           />
         </div>
 
-        <div className="space-y-12">
+        <motion.div
+          variants={blurInStagger}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="space-y-12"
+        >
           {experience.map((item, i) => {
             const isLeft = i % 2 === 0;
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.6, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-                className={`relative flex items-start gap-6 md:gap-0 ${
-                  isLeft ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+                variants={blurIn}
+                className={`relative flex items-start gap-6 md:gap-0 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}
               >
-                {/* Dot on timeline */}
-                <div
-                  className="relative z-10 flex-shrink-0 ml-0 md:ml-0 md:absolute md:left-1/2 md:-translate-x-1/2 mt-5"
-                >
+                {/* Pulsing dot on timeline */}
+                <div className="relative z-10 flex-shrink-0 md:absolute md:left-1/2 md:-translate-x-1/2 mt-5">
+                  {/* Emanating rings */}
+                  {[0, 1, 2].map((ring) => (
+                    <motion.div
+                      key={ring}
+                      className="absolute inset-0 rounded-full"
+                      animate={{ scale: [1, 2.8, 1], opacity: [0.7, 0, 0] }}
+                      transition={{
+                        duration: 2.4,
+                        repeat: Infinity,
+                        delay: ring * 0.7,
+                        ease: 'easeOut',
+                      }}
+                      style={{ background: item.accent }}
+                    />
+                  ))}
+                  {/* Core dot */}
                   <div
-                    className="w-3 h-3 rounded-full border-2 border-bg shadow-lg"
-                    style={{ background: item.accent, boxShadow: `0 0 12px ${item.accent}80` }}
+                    className="relative w-3.5 h-3.5 rounded-full border-2 border-bg"
+                    style={{ background: item.accent, boxShadow: `0 0 16px ${item.accent}90` }}
                   />
                 </div>
 
                 {/* Card */}
-                <div className={`ml-6 md:ml-0 md:w-[calc(50%-2rem)] ${isLeft ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
-                  <div
-                    className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-6 hover:border-white/20 transition-colors"
-                    style={{ borderLeftColor: item.accent, borderLeftWidth: 2 }}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div>
-                        <h3 className="font-heading font-bold text-white">{item.role}</h3>
-                        <p className="text-sm font-medium" style={{ color: item.accent }}>
-                          {item.org}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-0.5">{item.location}</p>
-                      </div>
-                      <span className="text-xs font-mono text-gray-500 whitespace-nowrap px-2 py-1 rounded-lg bg-white/5 border border-white/10">
-                        {item.period}
-                      </span>
-                    </div>
-                    <ul className="space-y-1.5">
-                      {item.bullets.map((b, bi) => (
-                        <li key={bi} className="text-sm text-gray-400 flex items-start gap-2">
-                          <span className="text-accent/60 mt-0.5 flex-shrink-0">▸</span>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                <div className={`ml-6 md:ml-0 md:w-[calc(50%-2.5rem)] ${isLeft ? 'md:mr-auto md:pr-10' : 'md:ml-auto md:pl-10'}`}>
+                  <ExperienceCard item={item} />
                 </div>
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function ExperienceCard({ item }: { item: typeof experience[0] }) {
+  const [hovered, setHovered] = useState(false);
+  const [glare, setGlare] = useState({ x: 50, y: 50 });
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setGlare({
+      x: ((e.clientX - rect.left) / rect.width) * 100,
+      y: ((e.clientY - rect.top) / rect.height) * 100,
+    });
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMouseMove}
+      whileHover={{ y: -6, scale: 1.01 }}
+      transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+      className="relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 overflow-hidden cursor-default shimmer-card"
+      style={{
+        borderLeftColor: item.accent,
+        borderLeftWidth: 2,
+        boxShadow: hovered ? `0 20px 50px ${item.accent}20, 0 0 0 1px ${item.accent}15` : undefined,
+        transition: 'box-shadow 0.3s',
+      }}
+    >
+      {/* Glare */}
+      <div
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+        style={{
+          opacity: hovered ? 1 : 0,
+          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.08) 0%, transparent 60%)`,
+        }}
+      />
+
+      {/* Type badge */}
+      <span
+        className="absolute top-4 right-4 text-xs font-mono px-2 py-0.5 rounded-full border"
+        style={{ color: item.accent, borderColor: `${item.accent}40`, background: `${item.accent}10` }}
+      >
+        {item.type === 'work' ? '⚡ work' : '🎓 edu'}
+      </span>
+
+      <div className="relative">
+        <div className="mb-4">
+          <h3 className="font-heading font-bold text-white text-base">{item.role}</h3>
+          <p className="text-sm font-semibold mt-0.5" style={{ color: item.accent }}>{item.org}</p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-xs text-gray-500">{item.location}</p>
+            <span className="text-xs font-mono text-gray-600 px-2 py-0.5 rounded-md bg-white/5 border border-white/8">
+              {item.period}
+            </span>
+          </div>
+        </div>
+
+        <ul className="space-y-2">
+          {item.bullets.map((b, bi) => (
+            <motion.li
+              key={bi}
+              initial={{ opacity: 0, x: -10 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: bi * 0.08 }}
+              className="text-sm text-gray-400 flex items-start gap-2"
+            >
+              <span className="flex-shrink-0 mt-0.5" style={{ color: `${item.accent}80` }}>▸</span>
+              {b}
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+    </motion.div>
   );
 }

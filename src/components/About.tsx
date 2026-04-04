@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { fadeInLeft, fadeInRight, staggerContainer, staggerItem } from '@/lib/animations';
+import { useRef, useEffect, useState, useCallback } from 'react';
+import { motion, useInView, useReducedMotion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { fadeInLeft, fadeInRight, staggerContainer, staggerItem, blurIn } from '@/lib/animations';
 import SectionLabel from './ui/SectionLabel';
 import { stats } from '@/data';
 
@@ -38,6 +38,66 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
   );
 }
 
+function PhotoCard() {
+  const ref = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
+  const mx = useMotionValue(0.5);
+  const my = useMotionValue(0.5);
+  const rx = useTransform(my, [0, 1], [12, -12]);
+  const ry = useTransform(mx, [0, 1], [-12, 12]);
+  const srx = useSpring(rx, { stiffness: 200, damping: 22 });
+  const sry = useSpring(ry, { stiffness: 200, damping: 22 });
+
+  const handleMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (prefersReduced) return;
+    const r = ref.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set((e.clientX - r.left) / r.width);
+    my.set((e.clientY - r.top) / r.height);
+  }, [mx, my, prefersReduced]);
+
+  const handleLeave = useCallback(() => {
+    mx.set(0.5); my.set(0.5);
+  }, [mx, my]);
+
+  return (
+    <div style={{ perspective: '900px' }} className="relative w-full max-w-sm mx-auto lg:mx-0">
+      {/* Animated decorative rings */}
+      <motion.div
+        animate={{ rotate: [3, 5, 3] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -inset-4 rounded-3xl border border-primary-500/20"
+      />
+      <motion.div
+        animate={{ rotate: [-2, -4, -2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute -inset-2 rounded-3xl border border-accent/20"
+      />
+
+      <motion.div
+        ref={ref}
+        style={{ rotateX: prefersReduced ? 0 : srx, rotateY: prefersReduced ? 0 : sry, transformStyle: 'preserve-3d' }}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary-900/40 via-bg to-accent/10 border border-white/10 aspect-square shimmer-card"
+      >
+        <img
+          src="/images/profile.jpeg"
+          alt="Umair Ahmad"
+          className="w-full h-full object-cover"
+        />
+        {/* Gloss overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-transparent to-white/5 pointer-events-none" />
+        {/* Code overlay */}
+        <div className="absolute bottom-4 left-4 right-4 font-mono text-xs text-primary-400/50 leading-relaxed bg-bg/70 backdrop-blur-md rounded-xl p-3 border border-white/5">
+          <p>$ whoami</p>
+          <p className="text-secondary/60">→ umair_ahmad</p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
@@ -46,7 +106,7 @@ export default function About() {
     <section id="about" ref={ref} className="py-24 px-4 max-w-7xl mx-auto">
       <SectionLabel text="about.me" />
       <motion.h2
-        variants={staggerItem}
+        variants={blurIn}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
         className="text-4xl sm:text-5xl font-bold font-heading mb-16"
@@ -62,25 +122,7 @@ export default function About() {
           animate={isInView ? 'visible' : 'hidden'}
           className="relative"
         >
-          <div className="relative w-full max-w-sm mx-auto lg:mx-0">
-            {/* Decorative rings */}
-            <div className="absolute -inset-4 rounded-3xl border border-accent/20 rotate-3" />
-            <div className="absolute -inset-2 rounded-3xl border border-secondary/20 -rotate-2" />
-
-            {/* Profile photo */}
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-accent/20 via-bg to-secondary/20 border border-white/10 aspect-square">
-              <img
-                src="/images/profile.jpeg"
-                alt="Umair Ahmad"
-                className="w-full h-full object-cover"
-              />
-              {/* Code decoration */}
-              <div className="absolute bottom-4 left-4 right-4 font-mono text-xs text-accent/40 leading-relaxed bg-bg/60 backdrop-blur-sm rounded-lg p-2">
-                <p>$ whoami</p>
-                <p className="text-secondary/60">→ umair_ahmad</p>
-              </div>
-            </div>
-          </div>
+          <PhotoCard />
         </motion.div>
 
         {/* Bio side */}

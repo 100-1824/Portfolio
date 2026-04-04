@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { staggerContainer, staggerItem } from '@/lib/animations';
+import { staggerContainer, staggerItem, blurIn } from '@/lib/animations';
 import SectionLabel from './ui/SectionLabel';
 import SkillBadge from './SkillBadge';
 import { skillCategories } from '@/data';
@@ -15,9 +15,9 @@ export default function SkillsSection() {
     <section id="skills" ref={ref} className="py-24 px-4 max-w-7xl mx-auto">
       <SectionLabel text="skills.map()" />
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
+        variants={blurIn}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
         className="text-4xl sm:text-5xl font-bold font-heading mb-16"
       >
         What I Work With
