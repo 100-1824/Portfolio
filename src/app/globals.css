@@ -25,36 +25,47 @@
   }
 
   ::selection {
-    background-color: #38BDF830;
-    color: #38BDF8;
+    background-color: #a855f730;
+    color: #c084fc;
   }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: #0F172A; }
-  ::-webkit-scrollbar-thumb { background: #38BDF840; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #38BDF880; }
+  ::-webkit-scrollbar-thumb { background: #a855f740; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #a855f780; }
 }
 
 /* ── Utilities ── */
 @layer utilities {
   .gradient-text {
-    background: linear-gradient(135deg, #38BDF8 0%, #10B981 50%, #8B5CF6 100%);
+    background: linear-gradient(135deg, #a855f7 0%, #ec4899 45%, #38BDF8 100%);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: gradient-x 4s ease infinite;
+    animation: gradient-x 6s ease infinite;
   }
 
   .glow-accent {
     box-shadow: 0 0 20px #38BDF840, 0 0 40px #38BDF820;
   }
 
+  .glow-primary {
+    box-shadow: 0 0 20px #a855f740, 0 0 40px #a855f720;
+  }
+
   .glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Purple-tinted glass for new components */
+  .glass-primary {
+    background: rgba(168, 85, 247, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(168, 85, 247, 0.15);
   }
 
   .section-fade {

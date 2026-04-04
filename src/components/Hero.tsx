@@ -129,29 +129,39 @@ export default function Hero() {
     >
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
+        {/* Primary purple orb — large, top-left */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
-          style={{ background: 'radial-gradient(circle, #38BDF820 0%, transparent 70%)' }}
+          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(circle, #a855f725 0%, transparent 70%)' }}
           animate={prefersReduced ? {} : { x: [0, 30, -20, 0], y: [0, -20, 30, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         />
+        {/* Pink accent orb — bottom-right */}
         <motion.div
           className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full"
-          style={{ background: 'radial-gradient(circle, #10B98120 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #ec489920 0%, transparent 70%)' }}
           animate={prefersReduced ? {} : { x: [0, -25, 15, 0], y: [0, 25, -15, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
         />
+        {/* Cyan accent orb — mid-right */}
         <motion.div
           className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full"
-          style={{ background: 'radial-gradient(circle, #8B5CF620 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, #38BDF818 0%, transparent 70%)' }}
           animate={prefersReduced ? {} : { x: [0, 20, -30, 0], y: [0, -30, 10, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
         />
+        {/* Small rose orb — top-right for depth */}
+        <motion.div
+          className="absolute top-1/3 right-1/5 w-48 h-48 rounded-full"
+          style={{ background: 'radial-gradient(circle, #f43f5e18 0%, transparent 70%)' }}
+          animate={prefersReduced ? {} : { x: [0, -15, 25, 0], y: [0, 20, -10, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+        />
         {/* Dot grid */}
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-[0.15]"
           style={{
-            backgroundImage: 'radial-gradient(circle, #38BDF830 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, #a855f730 1px, transparent 1px)',
             backgroundSize: '40px 40px',
           }}
         />
@@ -234,15 +244,13 @@ export default function Hero() {
               onMouseLeave={mag2.handleMouseLeave}
             >
               <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-accent/40 text-white font-semibold text-sm hover:bg-accent/10 hover:border-accent active:scale-95 transition-all"
+                href="#contact"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border border-primary-500/40 text-white font-semibold text-sm hover:bg-primary-500/10 hover:border-primary-500 active:scale-95 transition-all"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                Download Resume
+                Get in Touch
               </a>
             </motion.div>
           </motion.div>
