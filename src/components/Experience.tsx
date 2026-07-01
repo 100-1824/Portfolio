@@ -1,14 +1,33 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { drawLine, blurIn, blurInStagger } from '@/lib/animations';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
+import { blurIn, blurInStagger } from '@/lib/animations';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import SectionLabel from './ui/SectionLabel';
 import { experience } from '@/data';
 
 export default function Experience() {
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    if (prefersReduced || !ref.current || !lineRef.current) return;
+    const line = lineRef.current;
+    gsap.set(line, { scaleY: 0, transformOrigin: 'top' });
+
+    const trigger = ScrollTrigger.create({
+      trigger: ref.current,
+      start: 'top 75%',
+      end: 'bottom 60%',
+      scrub: 0.6,
+      onUpdate: (self) => gsap.set(line, { scaleY: self.progress }),
+    });
+
+    return () => trigger.kill();
+  }, [prefersReduced]);
 
   return (
     <section id="experience" ref={ref} className="py-24 px-4 max-w-5xl mx-auto">
@@ -23,12 +42,10 @@ export default function Experience() {
       </motion.h2>
 
       <div className="relative">
-        {/* Animated vertical line */}
+        {/* Scroll-scrubbed vertical line */}
         <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/5 md:-translate-x-px overflow-hidden">
-          <motion.div
-            variants={drawLine}
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
+          <div
+            ref={lineRef}
             className="w-full h-full"
             style={{ background: 'linear-gradient(180deg, #a855f7 0%, #ec4899 35%, #38bdf8 70%, #10b981 100%)' }}
           />

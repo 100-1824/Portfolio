@@ -3,6 +3,7 @@ import { JetBrains_Mono, Outfit } from 'next/font/google';
 import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import CustomCursor from '@/components/CustomCursor';
+import SmoothScroll from '@/components/SmoothScroll';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -131,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-bg text-white font-body antialiased">
         <ScrollProgress />
         <CustomCursor />
-        {children}
+        <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import {
   useTransform,
   useReducedMotion,
 } from 'framer-motion';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 const ROLES = [
   'Cybersecurity Specialist',
@@ -73,8 +74,49 @@ function useMagnetic() {
 export default function Hero() {
   const prefersReduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const auroraLayerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mag1 = useMagnetic();
   const mag2 = useMagnetic();
+
+  // ── Scroll-exit parallax — aurora layers drift apart as the hero scrolls out
+  useEffect(() => {
+    if (prefersReduced || !sectionRef.current) return;
+    const speeds = [-60, 90, -140];
+    const layers = auroraLayerRefs.current.filter(Boolean) as HTMLDivElement[];
+    const triggers = layers.map((layer, i) =>
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+        onUpdate: (self) => gsap.set(layer, { y: self.progress * speeds[i] }),
+      })
+    );
+    return () => triggers.forEach((t) => t.kill());
+  }, [prefersReduced]);
+
+  // ── Pinned crossfade — hero holds in place and dissolves into the next section
+  useEffect(() => {
+    if (prefersReduced || !sectionRef.current || !contentRef.current) return;
+    const content = contentRef.current;
+    const trigger = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: 'top top',
+      end: '+=60%',
+      pin: true,
+      pinSpacing: true,
+      scrub: 0.8,
+      onUpdate: (self) => {
+        gsap.set(content, {
+          opacity: 1 - self.progress,
+          scale: 1 - self.progress * 0.06,
+          filter: `blur(${self.progress * 6}px)`,
+        });
+      },
+    });
+    return () => trigger.kill();
+  }, [prefersReduced]);
 
   // ── Mouse parallax ──────────────────────────────────────────────────────────
   const rawX = useMotionValue(0);
@@ -142,43 +184,49 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#05010f] via-[#0a0520] to-[#080215]" />
 
         {/* Large purple aurora — slowest parallax */}
-        <motion.div
-          className="absolute -top-32 -left-32 w-[800px] h-[800px] rounded-full"
-          animate={prefersReduced ? {} : { scale: [1, 1.15, 0.92, 1], opacity: [0.55, 0.8, 0.55] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-          style={{
-            x: prefersReduced ? 0 : orbX,
-            y: prefersReduced ? 0 : orbY,
-            background: 'radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(109,40,217,0.2) 40%, transparent 70%)',
-            filter: 'blur(72px)',
-          }}
-        />
+        <div ref={(el) => { auroraLayerRefs.current[0] = el; }} className="absolute inset-0">
+          <motion.div
+            className="absolute -top-32 -left-32 w-[800px] h-[800px] rounded-full"
+            animate={prefersReduced ? {} : { scale: [1, 1.15, 0.92, 1], opacity: [0.55, 0.8, 0.55] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              x: prefersReduced ? 0 : orbX,
+              y: prefersReduced ? 0 : orbY,
+              background: 'radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(109,40,217,0.2) 40%, transparent 70%)',
+              filter: 'blur(72px)',
+            }}
+          />
+        </div>
 
         {/* Pink aurora — medium parallax */}
-        <motion.div
-          className="absolute -bottom-20 -right-20 w-[600px] h-[600px] rounded-full"
-          animate={prefersReduced ? {} : { scale: [1, 0.88, 1.1, 1], opacity: [0.45, 0.65, 0.45] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
-          style={{
-            x: prefersReduced ? 0 : midX,
-            y: prefersReduced ? 0 : midY,
-            background: 'radial-gradient(circle, rgba(236,72,153,0.4) 0%, rgba(244,114,182,0.15) 50%, transparent 70%)',
-            filter: 'blur(90px)',
-          }}
-        />
+        <div ref={(el) => { auroraLayerRefs.current[1] = el; }} className="absolute inset-0">
+          <motion.div
+            className="absolute -bottom-20 -right-20 w-[600px] h-[600px] rounded-full"
+            animate={prefersReduced ? {} : { scale: [1, 0.88, 1.1, 1], opacity: [0.45, 0.65, 0.45] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+            style={{
+              x: prefersReduced ? 0 : midX,
+              y: prefersReduced ? 0 : midY,
+              background: 'radial-gradient(circle, rgba(236,72,153,0.4) 0%, rgba(244,114,182,0.15) 50%, transparent 70%)',
+              filter: 'blur(90px)',
+            }}
+          />
+        </div>
 
         {/* Cyan accent — fastest parallax */}
-        <motion.div
-          className="absolute top-1/3 left-1/2 w-[400px] h-[400px] rounded-full -translate-x-1/2"
-          animate={prefersReduced ? {} : { scale: [1, 1.25, 0.88, 1], opacity: [0.25, 0.45, 0.25] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
-          style={{
-            x: prefersReduced ? 0 : frontX,
-            y: prefersReduced ? 0 : frontY,
-            background: 'radial-gradient(circle, rgba(56,189,248,0.25) 0%, transparent 70%)',
-            filter: 'blur(60px)',
-          }}
-        />
+        <div ref={(el) => { auroraLayerRefs.current[2] = el; }} className="absolute inset-0">
+          <motion.div
+            className="absolute top-1/3 left-1/2 w-[400px] h-[400px] rounded-full -translate-x-1/2"
+            animate={prefersReduced ? {} : { scale: [1, 1.25, 0.88, 1], opacity: [0.25, 0.45, 0.25] }}
+            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
+            style={{
+              x: prefersReduced ? 0 : frontX,
+              y: prefersReduced ? 0 : frontY,
+              background: 'radial-gradient(circle, rgba(56,189,248,0.25) 0%, transparent 70%)',
+              filter: 'blur(60px)',
+            }}
+          />
+        </div>
 
         {/* Rose small orb */}
         <motion.div
@@ -214,7 +262,7 @@ export default function Hero() {
       </div>
 
       {/* ── 3D Perspective Content ────────────────────────────────────────── */}
-      <div style={{ perspective: '1200px' }} className="relative z-10 w-full">
+      <div ref={contentRef} style={{ perspective: '1200px' }} className="relative z-10 w-full">
         <motion.div
           style={prefersReduced ? {} : { rotateX: tiltX, rotateY: tiltY }}
           className="text-center px-4 max-w-5xl mx-auto"
@@ -376,10 +424,9 @@ export default function Hero() {
             </motion.div>
           )}
         </motion.div>
-      </div>
 
-      {/* Scroll indicator */}
-      {showScroll && (
+        {/* Scroll indicator */}
+        {showScroll && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -395,7 +442,8 @@ export default function Hero() {
             <div className="w-1 h-1.5 rounded-full bg-primary-400" />
           </motion.div>
         </motion.div>
-      )}
+        )}
+      </div>
     </section>
   );
 }
