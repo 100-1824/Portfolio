@@ -1,129 +1,96 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { blurInStagger, blurIn } from '@/lib/animations';
-import SectionLabel from './ui/SectionLabel';
-import { certifications } from '@/data';
+import Image from 'next/image';
+import { motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
+import { certifications, type Certification } from '@/data';
+import { EASE_OUT } from '@/lib/motion';
+import SectionHeading from './ui/SectionHeading';
+import { ArrowUpRight, Check } from './ui/Icons';
 
-export default function Certifications() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+function CertCard({ c, i }: { c: Certification; i: number }) {
+  const reduce = useReducedMotion();
+  const rx = useSpring(useMotionValue(0), { stiffness: 140, damping: 16 });
+  const ry = useSpring(useMotionValue(0), { stiffness: 140, damping: 16 });
+  const gx = useMotionValue(50);
+  const gy = useMotionValue(50);
+  const sheen = useMotionTemplate`radial-gradient(500px circle at ${gx}% ${gy}%, rgba(255,255,255,0.10), transparent 40%), linear-gradient(115deg, transparent 30%, ${c.color}22 45%, transparent 60%)`;
 
   return (
-    <section id="certifications" ref={ref} className="py-24 px-4 max-w-7xl mx-auto">
-      <SectionLabel text="certifications.verify()" />
-      <motion.h2
-        variants={blurIn}
-        initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
-        className="text-4xl sm:text-5xl font-bold font-heading mb-16"
-      >
-        Certifications
-      </motion.h2>
-
+    <motion.article
+      initial={{ opacity: 0, y: 50, rotateX: 12 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 1.2, ease: EASE_OUT, delay: i * 0.1 }}
+      className="[perspective:1200px]"
+    >
       <motion.div
-        variants={blurInStagger}
-        initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
-        className="grid sm:grid-cols-2 gap-6 max-w-3xl"
+        onPointerMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          gx.set(px * 100);
+          gy.set(py * 100);
+          if (reduce || e.pointerType !== 'mouse') return;
+          ry.set((px - 0.5) * 12);
+          rx.set((py - 0.5) * -12);
+        }}
+        onPointerLeave={() => {
+          rx.set(0);
+          ry.set(0);
+        }}
+        style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }}
+        className="group relative h-full overflow-hidden rounded-3xl border border-line bg-ink-2"
+        data-cursor="hover"
       >
-        {certifications.map((cert) => (
-          <CertCard key={cert.id} cert={cert} />
-        ))}
+        <div className="relative aspect-square overflow-hidden">
+          <Image
+            src={c.image}
+            alt={`${c.title} credential badge`}
+            fill
+            sizes="(max-width: 768px) 100vw, 420px"
+            className="object-cover transition-transform duration-[1.4s] ease-out-expo group-hover:scale-105"
+          />
+          <motion.div style={{ background: sheen }} className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink-2 to-transparent" />
+        </div>
+        <div className="relative p-6 pt-2 md:p-7 md:pt-2" style={{ transform: 'translateZ(30px)' }}>
+          <div className="mb-3 flex items-center gap-2 font-mono text-[11px] tracking-widest" style={{ color: c.color }}>
+            <Check width={14} height={14} /> VERIFIED CREDENTIAL
+          </div>
+          <h3 className="font-display text-xl font-semibold leading-snug tracking-tight text-fg md:text-2xl">{c.title}</h3>
+          <p className="mt-1 text-sm text-fg-muted">
+            {c.issuer}
+            {c.year && <span className="text-fg-dim"> · {c.year}</span>}
+          </p>
+          <p className="mt-4 text-sm leading-relaxed text-fg-muted">{c.focus}</p>
+          {c.verifyUrl && (
+            <a href={c.verifyUrl} target="_blank" rel="noopener noreferrer" className="chip mt-5 !text-fg hover:!border-mint/50">
+              Verify <ArrowUpRight width={12} height={12} />
+            </a>
+          )}
+        </div>
       </motion.div>
-    </section>
+    </motion.article>
   );
 }
 
-function CertCard({ cert }: { cert: typeof certifications[0] }) {
-  const [hovered, setHovered] = useState(false);
-  const [glare, setGlare] = useState({ x: 50, y: 50 });
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setGlare({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-    });
-  };
-
+export default function Certifications() {
   return (
-    <motion.div
-      variants={blurIn}
-      ref={cardRef}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onMouseMove={handleMouseMove}
-      whileHover={{ y: -8, scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 22 }}
-      className="group relative rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 overflow-hidden cursor-default shimmer-card holo-border"
-      style={{
-        boxShadow: hovered ? `0 20px 50px ${cert.color}20, 0 0 0 1px ${cert.color}20` : undefined,
-        transition: 'box-shadow 0.3s',
-      }}
-    >
-      {/* Holographic glare */}
-      <div
-        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
-        style={{
-          opacity: hovered ? 1 : 0,
-          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.1) 0%, transparent 55%)`,
-        }}
-      />
-
-      {/* Corner glow */}
-      <div
-        className="absolute -top-10 -right-10 w-40 h-40 rounded-full transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `radial-gradient(circle, ${cert.color}50, transparent 70%)`,
-          filter: 'blur(20px)',
-          opacity: hovered ? 0.7 : 0.3,
-        }}
-      />
-
-      <div className="relative flex items-start gap-4">
-        {/* Animated icon badge */}
-        <motion.div
-          animate={hovered ? { rotate: [0, -6, 6, 0], scale: 1.1 } : { rotate: 0, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-14 h-14 rounded-xl flex items-center justify-center text-xl font-bold font-heading flex-shrink-0"
-          style={{ background: `${cert.color}20`, color: cert.color, border: `1px solid ${cert.color}40`, boxShadow: hovered ? `0 0 20px ${cert.color}40` : undefined }}
-        >
-          {cert.icon}
-        </motion.div>
-
-        <div>
-          <h3 className="font-heading font-bold text-white text-base leading-snug mb-1">{cert.title}</h3>
-          <p className="text-sm text-gray-400">{cert.issuer}</p>
-          <p className="text-xs font-mono mt-1" style={{ color: cert.color }}>{cert.year}</p>
+    <section id="credentials" className="relative py-28 md:py-40">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-grid opacity-40 mask-radial" />
+      <div className="container-x">
+        <SectionHeading
+          index="05"
+          label="Credentials"
+          title={'Verified, not\njust claimed.'}
+          intro="Industry certifications covering security fundamentals, operations and application security."
+        />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {certifications.map((c, i) => (
+            <CertCard key={c.id} c={c} i={i} />
+          ))}
         </div>
       </div>
-
-      {/* Verified badge */}
-      <div className="mt-4 flex items-center gap-2">
-        <motion.div
-          animate={hovered ? { scale: [1, 1.2, 1] } : {}}
-          transition={{ duration: 0.4 }}
-        >
-          <svg className="w-3.5 h-3.5" style={{ color: cert.color }} fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
-        </motion.div>
-        <span className="text-xs font-mono" style={{ color: cert.color }}>Verified</span>
-        {cert.verifyUrl && (
-          <a
-            href={cert.verifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-auto text-xs text-gray-600 hover:text-white transition-colors"
-          >
-            View ↗
-          </a>
-        )}
-      </div>
-    </motion.div>
+    </section>
   );
 }

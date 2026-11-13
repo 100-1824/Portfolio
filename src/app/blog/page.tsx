@@ -9,11 +9,12 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-bg text-white flex flex-col items-center justify-center px-4">
-      <div className="max-w-2xl text-center">
-        <p className="font-mono text-accent text-sm mb-4">{'> blog.init()'}</p>
-        <h1 className="text-4xl font-bold font-heading mb-4">Coming Soon</h1>
-        <p className="text-gray-400 text-lg mb-8">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5">
+      <div className="pointer-events-none absolute inset-0 bg-grid opacity-60 mask-radial" />
+      <div className="relative max-w-2xl text-center">
+        <p className="mb-4 font-mono text-sm text-mint">{'> blog.init()'}</p>
+        <h1 className="mb-4 font-display text-5xl font-semibold tracking-tightest text-fg">Coming Soon</h1>
+        <p className="mb-10 text-lg leading-relaxed text-fg-muted">
           Future posts will cover cybersecurity research, AI/ML experiments, and full-stack engineering
           &mdash; targeting keywords like{' '}
           <em>&ldquo;cybersecurity portfolio&rdquo;</em>, <em>&ldquo;DIDS intrusion detection&rdquo;</em>, and{' '}
@@ -21,7 +22,7 @@ export default function BlogPage() {
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-bg font-semibold text-sm hover:bg-accent/90 transition-all"
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-mint px-6 text-sm font-medium text-ink transition-shadow hover:shadow-[0_0_40px_rgba(61,245,196,0.5)]"
         >
           ← Back to Portfolio
         </Link>

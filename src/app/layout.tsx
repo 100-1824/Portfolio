@@ -1,23 +1,36 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Outfit } from 'next/font/google';
+import type { Viewport } from 'next';
+import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import CustomCursor from '@/components/CustomCursor';
 import SmoothScroll from '@/components/SmoothScroll';
+import Preloader from '@/components/Preloader';
 
-const jetbrainsMono = JetBrains_Mono({
+const display = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-jetbrains',
+  variable: '--font-display',
   display: 'swap',
 });
 
-const outfit = Outfit({
+const body = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-outfit',
+  variable: '--font-body',
   display: 'swap',
 });
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
+export const viewport: Viewport = {
+  themeColor: '#04060A',
+  colorScheme: 'dark',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://umair-ahmed-portfolio.vercel.app'),
@@ -101,6 +114,11 @@ const jsonLd = {
     '@type': 'EducationalOrganization',
     name: 'COMSATS University Islamabad — Wah Campus',
   },
+  hasCredential: [
+    'ISC2 Certified in Cybersecurity (CC)',
+    'Google Professional Cybersecurity Certificate',
+    'Certified AppSec Practitioner (CAP)',
+  ],
   knowsAbout: [
     'Cybersecurity',
     'Penetration Testing',
@@ -120,7 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`dark ${jetbrainsMono.variable} ${outfit.variable}`}
+      className={`dark ${display.variable} ${body.variable} ${mono.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -129,7 +147,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-bg text-white font-body antialiased">
+      <body>
+        <a
+          href="#about"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[400] focus:rounded-full focus:bg-mint focus:px-4 focus:py-2 focus:text-ink"
+        >
+          Skip to content
+        </a>
+        <Preloader />
         <ScrollProgress />
         <CustomCursor />
         <SmoothScroll>{children}</SmoothScroll>

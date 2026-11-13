@@ -4,12 +4,12 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 
 export default function ScrollProgress() {
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-
+  const scaleX = useSpring(scrollYProgress, { stiffness: 140, damping: 30, restDelta: 0.001 });
   return (
     <motion.div
-      style={{ scaleX, transformOrigin: '0%' }}
-      className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent via-secondary to-purple-500 z-[100]"
+      aria-hidden
+      style={{ scaleX }}
+      className="fixed inset-x-0 top-0 z-[120] h-[2px] origin-left bg-gradient-to-r from-mint via-mint to-signal-blue shadow-[0_0_12px_rgba(61,245,196,0.8)]"
     />
   );
 }
