@@ -1,28 +1,30 @@
 import type { Metadata } from 'next';
 import type { Viewport } from 'next';
-import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import CustomCursor from '@/components/CustomCursor';
 import SmoothScroll from '@/components/SmoothScroll';
 import Preloader from '@/components/Preloader';
 
-const display = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+// Fonts are bundled in the repo so builds never depend on fetching Google Fonts.
+const display = localFont({
+  src: './fonts/space-grotesk-latin-wght-normal.woff2',
+  weight: '300 700',
   variable: '--font-display',
   display: 'swap',
 });
 
-const body = Inter({
-  subsets: ['latin'],
+const body = localFont({
+  src: './fonts/inter-latin-wght-normal.woff2',
+  weight: '100 900',
   variable: '--font-body',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
+const mono = localFont({
+  src: './fonts/jetbrains-mono-latin-wght-normal.woff2',
+  weight: '100 800',
   variable: '--font-mono',
   display: 'swap',
 });
